@@ -4,7 +4,9 @@ import os
 
 import click
 
+from eink_dashboard.cli.commands.carousel import carousel as carousel_cmd, alert as alert_cmd
 from eink_dashboard.cli.commands.device import device as device_cmd
+from eink_dashboard.cli.commands.generate import generate
 from eink_dashboard.cli.commands.push import push
 from eink_dashboard.cli.commands.pull import pull
 from eink_dashboard.cli.commands.watch import watch
@@ -28,6 +30,9 @@ def dashboard() -> None:
 
 cli.add_command(dashboard)
 cli.add_command(device_cmd)
+cli.add_command(carousel_cmd)
+cli.add_command(alert_cmd)
+cli.add_command(generate, name="generate")
 
 dashboard.add_command(push)
 dashboard.add_command(pull)

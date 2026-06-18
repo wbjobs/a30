@@ -1,0 +1,323 @@
+name: "Smart Office Dashboard"
+width: 800
+height: 480
+refresh_interval: 60
+refresh_mode: auto
+
+variables:
+  office: "R&D Center"
+  normal_color: "black"
+  warning_color: "orange"
+  danger_color: "red"
+
+datasources:
+  - name: prometheus
+    type: prometheus
+    config:
+      url: "http://prometheus:9090"
+      queries:
+        cpu_temp: 'avg(cpu_temp)'
+        server_load: 'avg(loadavg_1m)'
+        alert_count: 'sum(ALERTS{alertstate="firing"})'
+
+carousel:
+  enabled: true
+  default_page: "monitoring"
+  transition: fade
+  transition_frames: 3
+  interval: 60
+
+  rules:
+    - type: weekday
+      value: workday
+      target_page: "monitoring"
+
+    - type: time_range
+      value: "09:00-18:00"
+      target_page: "monitoring"
+
+    - type: time_range
+      value: "18:00-23:59"
+      target_page: "weather"
+
+    - type: time_range
+      value: "00:00-07:00"
+      target_page: "calendar"
+
+    - type: condition
+      value: "alert_count > 0"
+      target_page: "alerts"
+
+    - type: weekday
+      value: weekend
+      target_page: "weather"
+
+  pages:
+    - name: "monitoring"
+      description: "Work hours monitoring dashboard"
+      widgets:
+        - type: text
+          x: 20
+          y: 20
+          width: 760
+          height: 60
+          config:
+            text: "{{ office }} - System Monitor"
+            font_size: 28
+            align: center
+            bold: true
+
+        - type: progress
+          x: 50
+          y: 120
+          width: 350
+          height: 80
+          config:
+            label: "CPU Temperature"
+            value: "{{ cpu_temp | default(45) }}"
+            max: 100
+            unit: "°C"
+            condition: "{{ cpu_temp | default(45) > 70 }}"
+            danger_threshold: 70
+            warning_threshold: 60
+
+        - type: progress
+          x: 400
+          y: 120
+          width: 350
+          height: 80
+          config:
+            label: "Server Load"
+            value: "{{ server_load | default(1.2) }}"
+            max: 10
+            unit: ""
+            danger_threshold: 8
+            warning_threshold: 5
+
+        - type: line_chart
+          x: 50
+          y: 240
+          width: 700
+          height: 200
+          config:
+            title: "CPU Temperature (24h)"
+            data_points: 24
+            values:
+              - 42
+              - 45
+              - 48
+              - 52
+              - 55
+              - 58
+              - 55
+              - 50
+              - 48
+              - 45
+              - 48
+              - 52
+              - 58
+              - 62
+              - 65
+              - 68
+              - 65
+              - 60
+              - 58
+              - 55
+              - 52
+              - 50
+              - 48
+              - 46
+
+    - name: "weather"
+      description: "Weather and air quality"
+      widgets:
+        - type: text
+          x: 20
+          y: 20
+          width: 760
+          height: 60
+          config:
+            text: "{{ office }} - Weather"
+            font_size: 28
+            align: center
+            bold: true
+
+        - type: text
+          x: 100
+          y: 120
+          width: 200
+          height: 100
+          config:
+            text: "☀️"
+            font_size: 72
+            align: center
+
+        - type: text
+          x: 350
+          y: 130
+          width: 300
+          height: 80
+          config:
+            text: "25°C"
+            font_size: 56
+            bold: true
+
+        - type: text
+          x: 350
+          y: 210
+          width: 300
+          height: 40
+          config:
+            text: "Sunny, H:28° L:18°"
+            font_size: 24
+
+        - type: line_chart
+          x: 50
+          y: 280
+          width: 700
+          height: 160
+          config:
+            title: "7-Day Temperature Forecast"
+            data_points: 7
+            labels:
+              - Mon
+              - Tue
+              - Wed
+              - Thu
+              - Fri
+              - Sat
+              - Sun
+            values:
+              - 25
+              - 27
+              - 24
+              - 22
+              - 26
+              - 28
+              - 27
+
+    - name: "calendar"
+      description: "Calendar and daily schedule"
+      widgets:
+        - type: text
+          x: 20
+          y: 20
+          width: 760
+          height: 60
+          config:
+            text: "{{ office }} - Today's Schedule"
+            font_size: 28
+            align: center
+            bold: true
+
+        - type: text
+          x: 50
+          y: 100
+          width: 700
+          height: 50
+          config:
+            text: "09:00 - Team standup meeting"
+            font_size: 22
+
+        - type: text
+          x: 50
+          y: 150
+          width: 700
+          height: 50
+          config:
+            text: "11:00 - Product design review"
+            font_size: 22
+
+        - type: text
+          x: 50
+          y: 200
+          width: 700
+          height: 50
+          config:
+            text: "14:00 - Sprint planning"
+            font_size: 22
+
+        - type: text
+          x: 50
+          y: 250
+          width: 700
+          height: 50
+          config:
+            text: "16:00 - 1-on-1 with manager"
+            font_size: 22
+
+        - type: progress
+          x: 100
+          y: 320
+          width: 600
+          height: 60
+          config:
+            label: "Tasks completed"
+            value: "3"
+            max: "5"
+            unit: "/5"
+
+    - name: "alerts"
+      description: "Active alerts and issues"
+      widgets:
+        - type: text
+          x: 20
+          y: 20
+          width: 760
+          height: 60
+          config:
+            text: "⚠️ ACTIVE ALERTS ({{ alert_count | default(0) }})"
+            font_size: 28
+            align: center
+            bold: true
+            color: "red"
+
+        - type: text
+          x: 50
+          y: 120
+          width: 700
+          height: 80
+          config:
+            text: "🔴 High CPU on server-prod-01"
+            font_size: 24
+            color: "red"
+
+        - type: text
+          x: 50
+          y: 200
+          width: 700
+          height: 80
+          config:
+            text: "🟡 Memory usage > 80% on server-prod-02"
+            font_size: 24
+            color: "orange"
+
+        - type: text
+          x: 50
+          y: 280
+          width: 700
+          height: 80
+          config:
+            text: "🟢 Disk space normal on all servers"
+            font_size: 24
+            color: "green"
+
+        - type: progress
+          x: 100
+          y: 360
+          width: 600
+          height: 80
+          config:
+            label: "System Health"
+            value: "72"
+            max: "100"
+            unit: "%"
+            warning_threshold: 70
+            danger_threshold: 50
+
+webhook:
+  enabled: true
+  endpoint: "/api/webhook/prometheus"
+  target_device: "all"
+  blink_duration: 60
+  blink_interval: 1
