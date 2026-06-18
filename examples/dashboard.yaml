@@ -1,0 +1,112 @@
+name: system-dashboard
+width: 800
+height: 480
+refresh_interval: 30
+
+variables:
+  title: "System Monitor"
+  warning_temp: 70
+
+datasources:
+  - name: system
+    type: script
+    config:
+      shell: /bin/sh
+      queries:
+        cpu_temp: "cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null | awk '{printf \"%.1f\", $1/1000}' || echo 45.0"
+        cpu_usage: "top -bn1 | grep 'Cpu(s)' | awk '{print $2}' | cut -d'%' -f1"
+        memory_usage: "free | grep Mem | awk '{printf \"%.1f\", $3/$2 * 100}'"
+        disk_usage: "df / | tail -1 | awk '{print $5}' | tr -d '%'"
+
+  - name: prometheus
+    type: prometheus
+    config:
+      base_url: http://localhost:9090
+      queries:
+        node_cpu_seconds_total: rate(node_cpu_seconds_total{mode="idle"}[5m])
+
+widgets:
+  - type: text
+    x: 10
+    y: 10
+    width: 780
+    height: 40
+    config:
+      text: "{{ title }}"
+      font_size: 28
+      align: center
+      color: black
+
+  - type: text
+    x: 10
+    y: 60
+    width: 780
+    height: 24
+    condition: cpu_temp > warning_temp
+    config:
+      text: "WARNING: High CPU Temperature! {{ cpu_temp }}°C"
+      font_size: 18
+      align: center
+      color: red
+
+  - type: progress
+    x: 50
+    y: 120
+    width: 350
+    height: 50
+    config:
+      label: "CPU Usage"
+      value: "{{ cpu_usage }}"
+      max: 100
+      show_percent: true
+      color: black
+      bar_color: black
+
+  - type: progress
+    x: 420
+    y: 120
+    width: 350
+    height: 50
+    config:
+      label: "Memory Usage"
+      value: "{{ memory_usage }}"
+      max: 100
+      show_percent: true
+      color: black
+      bar_color: black
+
+  - type: progress
+    x: 50
+    y: 200
+    width: 350
+    height: 50
+    config:
+      label: "Disk Usage"
+      value: "{{ disk_usage }}"
+      max: 100
+      show_percent: true
+      color: black
+      bar_color: black
+
+  - type: line_chart
+    x: 50
+    y: 280
+    width: 700
+    height: 180
+    config:
+      title: "CPU Temperature (Last hour)"
+      data:
+        - 45
+        - 48
+        - 52
+        - 55
+        - 53
+        - 58
+        - 62
+        - 60
+        - 57
+        - 55
+        - 53
+        - 50
+      color: black
+      show_grid: true

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eink-dashboard"
+version = "0.1.0"
+description = "E-Ink Dashboard CLI and device service for Raspberry Pi"
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1.0",
+    "PyYAML>=6.0",
+    "Jinja2>=3.1.0",
+    "requests>=2.31.0",
+    "Pillow>=10.0.0",
+    "Flask>=3.0.0",
+    "rich>=13.7.0",
+    "pydantic>=2.0.0",
+]
+
+[project.scripts]
+eink = "eink_dashboard.cli.main:cli"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "mypy>=1.0",
+    "ruff>=0.1.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["eink_dashboard*"]
