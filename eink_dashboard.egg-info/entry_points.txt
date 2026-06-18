@@ -1,0 +1,2 @@
+[console_scripts]
+eink = eink_dashboard.cli.main:cli

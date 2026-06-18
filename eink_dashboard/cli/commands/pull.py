@@ -7,7 +7,7 @@ import click
 import requests
 from rich.table import Table
 
-from ..console_utils import console, safe_print
+from eink_dashboard.utils.console import console, safe_print
 
 
 @click.command()

@@ -1,0 +1,38 @@
+devices:
+  - name: office-left
+    url: http://192.168.1.101:5000
+    groups:
+      - all
+      - office
+      - meeting-room-a
+    description: "左侧电子墨水屏 - 左侧会议室"
+
+  - name: office-right
+    url: http://192.168.1.102:5000
+    groups:
+      - all
+      - office
+      - meeting-room-a
+    description: "右侧电子墨水屏 - 右侧会议室"
+
+  - name: lab-main
+    url: http://192.168.1.103:5000
+    groups:
+      - all
+      - lab
+    description: "实验室主控屏 - 实验室入口"
+
+  - name: lab-server-room
+    url: http://192.168.1.104:5000
+    groups:
+      - all
+      - lab
+      - server-room
+    description: "服务器室监控屏"
+
+  - name: reception
+    url: http://192.168.1.105:5000
+    groups:
+      - all
+      - reception
+    description: "前台接待屏"

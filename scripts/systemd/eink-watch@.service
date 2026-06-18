@@ -1,0 +1,25 @@
+[Unit]
+Description=E-Ink Dashboard Watch Daemon
+After=network.target
+Wants=network.target
+
+[Service]
+Type=forking
+User=%i
+Group=%i
+WorkingDirectory=/home/%i
+Environment=EINK_DEVICE_URL=%i
+ExecStart=/usr/bin/python3 -m eink_dashboard.cli.main --device-url %I dashboard watch --start --interval 30
+ExecStop=/usr/bin/python3 -m eink_dashboard.cli.main --device-url %I dashboard watch --stop
+PIDFile=/home/%i/.eink/watch_%i.pid
+Restart=on-failure
+RestartSec=10
+KillMode=mixed
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=eink-watch-%i
+
+[Install]
+WantedBy=multi-user.target

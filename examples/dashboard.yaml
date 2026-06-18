@@ -1,7 +1,17 @@
 name: system-dashboard
 width: 800
 height: 480
-refresh_interval: 30
+
+# 屏幕刷新间隔（秒），默认60秒以减少残影和烧屏
+# 紧急告警（如温度>70°C）会自动切换到5秒快速刷新
+refresh_interval: 60
+
+# 刷新模式:
+#   - auto: 自动局部刷新（推荐，减少烧屏），有变化才更新
+#   - partial: 强制局部刷新，只更新变化区域
+#   - full: 每次都全量刷新（不推荐，残影和烧屏风险高）
+# 可通过 API: PUT /api/refresh-mode 动态修改
+refresh_mode: auto
 
 variables:
   title: "System Monitor"

@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: eink-dashboard
+Version: 0.1.0
+Summary: E-Ink Dashboard CLI and device service for Raspberry Pi
+Requires-Python: >=3.9
+Requires-Dist: click>=8.1.0
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: Jinja2>=3.1.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: Pillow>=10.0.0
+Requires-Dist: Flask>=3.0.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: pydantic>=2.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"

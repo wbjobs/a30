@@ -32,7 +32,8 @@ class DashboardConfig:
     name: str
     width: int
     height: int
-    refresh_interval: int = 30
+    refresh_interval: int = 60
+    refresh_mode: str = "auto"
     variables: Dict[str, Any] = field(default_factory=dict)
     datasources: List[DataSourceConfig] = field(default_factory=list)
     widgets: List[WidgetConfig] = field(default_factory=list)
@@ -50,7 +51,8 @@ def load_config(file_path: str) -> DashboardConfig:
     name = data.get("name", "dashboard")
     width = data.get("width", 800)
     height = data.get("height", 480)
-    refresh_interval = data.get("refresh_interval", 30)
+    refresh_interval = data.get("refresh_interval", 60)
+    refresh_mode = data.get("refresh_mode", "auto")
     variables = data.get("variables", {})
 
     datasources = []
@@ -83,6 +85,7 @@ def load_config(file_path: str) -> DashboardConfig:
         width=width,
         height=height,
         refresh_interval=refresh_interval,
+        refresh_mode=refresh_mode,
         variables=variables,
         datasources=datasources,
         widgets=widgets,

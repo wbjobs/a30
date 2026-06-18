@@ -4,9 +4,10 @@ import os
 
 import click
 
-from .commands.push import push
-from .commands.pull import pull
-from .commands.watch import watch
+from eink_dashboard.cli.commands.device import device as device_cmd
+from eink_dashboard.cli.commands.push import push
+from eink_dashboard.cli.commands.pull import pull
+from eink_dashboard.cli.commands.watch import watch
 
 DEFAULT_DEVICE_URL = os.environ.get("EINK_DEVICE_URL", "http://localhost:5000")
 
@@ -21,13 +22,20 @@ def cli(ctx: click.Context, device_url: str) -> None:
 
 @click.group()
 def dashboard() -> None:
+    """Dashboard management commands"""
     pass
 
 
 cli.add_command(dashboard)
+cli.add_command(device_cmd)
+
 dashboard.add_command(push)
 dashboard.add_command(pull)
 dashboard.add_command(watch)
+
+cli.add_command(push, name="push")
+cli.add_command(pull, name="pull")
+cli.add_command(watch, name="watch")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,30 @@
+[Unit]
+Description=E-Ink Dashboard Device Server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/eink-dashboard
+ExecStart=/home/pi/eink-dashboard/.venv/bin/python scripts/device_server.py --port 5000
+Restart=on-failure
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=eink-dashboard
+
+# Security
+ProtectSystem=full
+ProtectHome=read-only
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
